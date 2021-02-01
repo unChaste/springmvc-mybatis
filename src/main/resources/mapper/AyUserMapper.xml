@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ay.dao.AyUserDao">
+    <!-- select元素，配置查询语句映射 -->
+    <select id="findAll" resultType="com.ay.model.AyUser">
+        select id, name, password from ay_user
+    </select>
+
+    <!-- insert元素 配置插入语句映射 -->
+    <insert id="insert" parameterType="com.ay.model.AyUser">
+        insert into ay_user(id, name, password) value(#{id}, #{name}, #{password})
+    </insert>
+
+    <!-- delete元素，配置删除语句映射 -->
+    <delete id="delete" parameterType="int">
+        delete from ay_user where id = #{id}
+    </delete>
+
+    <!-- update元素，配置更新语句映射 -->
+    <update id="update">
+        update ay_user set name = #{name}, password = #{password} where id = #{id}
+    </update>
+
+    <select id="countByName" parameterType="string" resultType="java.lang.Integer">
+        select count(*) from ay_user where name = #{name}
+    </select>
+
+    <!-- 定义可重用语句块 -->
+    <sql id="userField">
+        id, name, password
+    </sql>
+    <!-- 引用userField可重用块 -->
+    <select id="findByName" parameterType="string" resultType="com.ay.model.AyUser">
+        select
+        <!-- 相当于
+        id, name, passwor
+        -->
+        <include refid="userField"/>
+        from ay_user where name like #{name} + "%";
+    </select>
+
+    <!-- 定义可重用语句块，${}可以定义变量 -->
+    <sql id="userField2">
+        ${prefix}.id, ${prefix}.name, ${prefix}.password
+    </sql>
+    <select id="findById" parameterType="integer" resultType="com.ay.model.AyUser">
+        select
+        <include refid="userField2">
+            <property name="prefix" value="a"/>
+        </include>
+        from ay_user a where id = #{id};
+    </select>
+
+    <!-- 当结果类型不符合时，可以定义结果映射，描述对象属性的对应关系 -->
+    <resultMap id="userMap" type="com.ay.model.AyUser">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="password" column="passwordPlus"/>
+    </resultMap>
+    <select id="findById2" resultMap="userMap">
+        select * from ay_user where id = #{id}
+    </select>
+
+    <!-- 动态语句 if -->
+    <select id="findByNameAndPassword" resultType="com.ay.model.AyUser">
+        select
+        id, name, password
+        from ay_user
+        where true
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        <if test="password != null and password != ''">
+            and password = #{password}
+        </if>
+    </select>
+
+    <!-- 动态语句 choose、when、otherwise -->
+    <select id="findByNameAndPassword2" resultType="com.ay.model.AyUser">
+        select
+        id, name, password
+        from ay_user
+        where true
+        <choose>
+            <when test="name != null and name != ''">
+                and name = #{name}
+            </when>
+            <when test="password != null and password != ''">
+                and password = #{password}
+            </when>
+            <otherwise>
+                order by id
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 动态语句 trim、where、set -->
+    <select id="findByNameAndPassword3" resultType="com.ay.model.AyUser">
+        select
+        id, name, password
+        from ay_user
+        <trim prefix="where" prefixOverrides="and">
+            <if test="name != null and name != ''">
+               and name = #{name}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 动态语句 where -->
+    <select id="findByNameAndPassword4" resultType="com.ay.model.AyUser">
+        select * from ay_user
+        <where>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <!-- 动态语句 foreach -->
+    <select id="findByIds" resultType="com.ay.model.AyUser">
+        select * from ay_user
+        where id in
+        <foreach item="item" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- 一对多映射-->
+    <resultMap id="userMap2" type="com.ay.model.AyUser">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <collection property="ayUserAddressList"
+                    javaType="ArrayList"
+                    column="id"
+                    select="com.ay.dao.AyUserAddressDao.findByUserId"/>
+        <!-- column表示AyUser表中哪个字段，作为传入select语句中的参数 -->
+    </resultMap>
+    <select id="findById3" resultMap="userMap2">
+        select * from ay_user where id = #{id}
+    </select>
+    <select id="find" resultType="com.ay.model.AyUser">
+        select id, name, password from ay_user limit #{startRow}, #{pageSize};
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from ay_user;
+    </select>
+
+</mapper>
