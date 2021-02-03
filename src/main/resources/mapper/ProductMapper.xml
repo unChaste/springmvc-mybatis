@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ay.dao.ProductDao">
+    <update id="updateProduct">
+      update product
+      set name = #{name}, description = #{description}, price = #{price}
+      where id = #{id}
+    </update>
+
+    <delete id="deleteProduct">
+        delete from product where id = #{productId}
+    </delete>
+
     <select id="findById" parameterType="integer" resultType="com.ay.model.Product">
         select id, name, description, price from product where id = #{id}
     </select>
+
+    <select id="listProduct" resultType="com.ay.model.Product">
+        select * from product
+        <where>
+            <if test="author != null and author != ''">
+                and author like '%' #{author} '%'
+            </if>
+            <if test="name != null and name != ''">
+                and name like '%' #{name} '%'
+            </if>
+        </where>
+    </select>
+
     <insert id="saveProduct" parameterType="com.ay.model.Product" useGeneratedKeys="true" keyProperty="id">
         insert into product (name, description, price) value (#{name}, #{description}, #{price})
     </insert>

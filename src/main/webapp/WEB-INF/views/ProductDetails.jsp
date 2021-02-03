@@ -13,6 +13,7 @@
     Description: ${product.description}<br/>
     Price: ${product.price}
     </p>
+    <a href="/list-product">返回列表</a>
 </div>
 </body>
 </html>

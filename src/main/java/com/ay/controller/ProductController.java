@@ -1,17 +1,16 @@
 package com.ay.controller;
 
 import com.ay.form.ProductForm;
+import com.ay.form.ProductListParam;
 import com.ay.model.Product;
 import com.ay.service.ProductService;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ProductController {
@@ -46,13 +45,43 @@ public class ProductController {
         return "redirect:/view-product?productId=" + product.getId();
     }
 
-    @RequestMapping(value = "/view-product", method = RequestMethod.GET)
+    @RequestMapping(value = "view-product", method = RequestMethod.GET)
     public String viewProduct(@RequestParam("productId") Integer productId, Model model) {
         Product product = productService.findById(productId);
 
         model.addAttribute("product", product);
 
         return "ProductDetails";
+    }
+
+    @RequestMapping(value = "/list-product", method = RequestMethod.GET)
+    public String listProduct(ProductListParam productListParam, Model model) {
+        PageInfo<Product> pageInfo = productService.listProduct(productListParam);
+
+        model.addAttribute("pageInfo", pageInfo);
+
+        return "ProductList";
+    }
+
+    @GetMapping("/edit-product")
+    public String editProduct(Integer productId, Model model) {
+        Product product = productService.findById(productId);
+        model.addAttribute("product", product);
+        return "ProductEdit";
+    }
+
+    @PostMapping("/update-product")
+    public String updateProduct(Product product) {
+        productService.updateProduct(product);
+
+        return "redirect:/list-product";
+    }
+
+    @GetMapping("/delete-product")
+    public String deleteProduct(@RequestParam("productId") String productId) {
+        productService.deleteProduct(productId);
+
+        return "redirect:/list-product";
     }
 
 }
