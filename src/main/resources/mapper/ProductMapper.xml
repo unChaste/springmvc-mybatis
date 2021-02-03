@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ay.dao.ProductDao">
+    <select id="findById" parameterType="integer" resultType="com.ay.model.Product">
+        select id, name, description, price from product where id = #{id}
+    </select>
+    <insert id="saveProduct" parameterType="com.ay.model.Product" useGeneratedKeys="true" keyProperty="id">
+        insert into product (name, description, price) value (#{name}, #{description}, #{price})
+    </insert>
+</mapper>
