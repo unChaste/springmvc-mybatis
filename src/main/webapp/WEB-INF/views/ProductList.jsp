@@ -13,8 +13,15 @@
 </head>
 <body>
 <form action="/list-product" method="get">
-    <input type="text" name="name"/>
-    <input type="submit" value="搜索"/>
+    <p>
+        <span>
+        <input type="text" name="name"/>
+        <input type="submit" value="搜索"/>
+        </span>
+        <span>
+            <a href="/input-product">添加</a>
+        </span>
+    </p>
 </form>
 <table border="1">
     <tr>
