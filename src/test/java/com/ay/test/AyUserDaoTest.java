@@ -1,11 +1,17 @@
 package com.ay.test;
 
 import com.ay.dao.AyUserDao;
+import com.ay.dao.ProductDao;
 import com.ay.model.AyUser;
+import com.ay.model.Product;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,7 +31,7 @@ public class AyUserDaoTest extends BaseJUnit4Test {
 
     @Test
     public void testFindById() {
-        AyUser ayUser = ayUserDao.findById2(1);
+        AyUser ayUser = ayUserDao.findById(1);
         Assert.assertEquals(1, ayUser.getId().intValue());
     }
 
@@ -106,6 +112,49 @@ public class AyUserDaoTest extends BaseJUnit4Test {
         int total = ayUserDao.count();
         List<AyUser> userList = ayUserDao.find(startRow, pageSize);
         System.out.println(userList);
+    }
+
+    @Autowired
+    private SqlSessionFactoryBean sqlSessionFactoryBean;
+
+    @Test
+    public void testCacheLevelOne() throws Exception {
+        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        AyUserDao ayUserDao = sqlSession.getMapper(AyUserDao.class);
+
+        AyUser ayUserOne = ayUserDao.findById(1);
+        System.out.println(ayUserOne);
+
+//        ayUserDao.update(ayUserOne);
+
+
+        AyUser ayUserTwo = ayUserDao.findById(1);
+        System.out.println(ayUserTwo);
+
+
+        System.out.println("缓存返回的实例是否一样：" + (ayUserOne == ayUserTwo));
+
+        sqlSession.close();
+    }
+
+    @Autowired
+    private ProductDao productDao;
+
+    @Test
+    public void testCacheLevelTwo() {
+        AyUser ayUserOne = ayUserDao.findById(1);
+        System.out.println(ayUserOne);
+
+//        ayUserDao.update(ayUserOne);
+        Product product = productDao.findById(30);
+//        System.out.println(product);
+        productDao.updateProduct(product);
+
+        AyUser ayUserTwo = ayUserDao.findById(1);
+        System.out.println(ayUserTwo);
+
+        System.out.println("缓存返回的实例是否一样：" + (ayUserOne == ayUserTwo));
     }
 
 }

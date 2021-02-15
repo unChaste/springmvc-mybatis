@@ -17,4 +17,10 @@ public class AyUserServiceImpl implements AyUserService {
     public List<AyUser> findAll() {
         return ayUserDao.findAll();
     }
+
+    @Override
+    public int deleteById(Integer id) {
+        int result = ayUserDao.delete(id);
+        return result;
+    }
 }

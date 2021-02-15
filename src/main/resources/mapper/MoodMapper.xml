@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ay.dao.MoodDao">
+    <insert id="saveUserMoodPraise">
+        insert into user_mood_praise (moodId, userId, isCancel, praiseTime)
+        values(#{moodId}, #{userId}, #{isCancel}, #{praiseTime})
+    </insert>
+    <update id="increasePraiseNum">
+        update mood set praiseNum = praiseNum + 1 where id = #{moodId}
+    </update>
+    <update id="decreasePraiseNum">
+        update mood set praiseNum = praiseNum - 1 where id = #{moodId}
+    </update>
+    <select id="listMood" resultType="com.ay.response.MoodListResponse">
+        select mood.id, user.name userName, content, publishTime, praiseNum,
+        (select count(1) from user_mood_praise where moodId = mood.id and userId = #{userId}) hasPraised
+        from mood
+        join user on user.id = mood.userId
+    </select>
+    <select id="findPraiseByMoodIdAndUserId" resultType="com.ay.model.UserMoodPraise">
+        select * from user_mood_praise where moodId = #{moodId} and userId = #{userId}
+    </select>
+    <delete id="deleteUserMoodPraiseById">
+        delete from user_mood_praise where id = #{userMoodPraiseId}
+    </delete>
+</mapper>

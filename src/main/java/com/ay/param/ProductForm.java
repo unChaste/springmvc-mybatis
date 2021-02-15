@@ -1,10 +1,17 @@
-package com.ay.form;
+package com.ay.param;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.DecimalMin;
 
 public class ProductForm {
+    @NotBlank(message = "名称不能为空")
     private String name;
 
     private String description;
 
+    @NotBlank(message = "价格不能为空")
+    @DecimalMin(value = "0", message = "价格不能小于等于零")
     private String price;
 
     public String getName() {

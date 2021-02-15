@@ -1,4 +1,4 @@
-package com.ay.form;
+package com.ay.param;
 
 public class ProductListParam {
     private String author;

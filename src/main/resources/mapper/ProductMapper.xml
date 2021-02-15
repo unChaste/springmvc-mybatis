@@ -7,13 +7,9 @@
       where id = #{id}
     </update>
 
-    <delete id="deleteProduct">
+    <delete id="deleteProduct" parameterType="integer">
         delete from product where id = #{productId}
     </delete>
-
-    <select id="findById" parameterType="integer" resultType="com.ay.model.Product">
-        select id, name, description, price from product where id = #{id}
-    </select>
 
     <select id="listProduct" resultType="com.ay.model.Product">
         select * from product
@@ -25,6 +21,10 @@
                 and name like '%' #{name} '%'
             </if>
         </where>
+    </select>
+
+    <select id="findById" resultType="com.ay.model.Product">
+        select * from product where id = #{id}
     </select>
 
     <insert id="saveProduct" parameterType="com.ay.model.Product" useGeneratedKeys="true" keyProperty="id">

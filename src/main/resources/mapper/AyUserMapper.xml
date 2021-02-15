@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ay.dao.AyUserDao">
+    <!-- 声明使用二级缓存，evictiion：回收策略 LRU(最近最少使用) FIFO SOFT WEAK 默认LRU，
+         flushInterval：刷新时间,
+         readOnly:是否只读 默认false true返回同一个实例 false返回缓存的复制，
+         size:缓存数目 默认1024，-->
+    <!--<cache eviction="FIFO" flushInterval="600000" size="4096"/>-->
+    <!--<cache-ref namespace="com.ay.model.ProductDao"/>-->
+    <cache/>
+
     <!-- select元素，配置查询语句映射 -->
     <select id="findAll" resultType="com.ay.model.AyUser">
         select id, name, password from ay_user
@@ -44,11 +52,7 @@
         ${prefix}.id, ${prefix}.name, ${prefix}.password
     </sql>
     <select id="findById" parameterType="integer" resultType="com.ay.model.AyUser">
-        select
-        <include refid="userField2">
-            <property name="prefix" value="a"/>
-        </include>
-        from ay_user a where id = #{id};
+        select * from ay_user where id = #{id}
     </select>
 
     <!-- 当结果类型不符合时，可以定义结果映射，描述对象属性的对应关系 -->
@@ -101,7 +105,7 @@
         from ay_user
         <trim prefix="where" prefixOverrides="and">
             <if test="name != null and name != ''">
-               and name = #{name}
+                and name = #{name}
             </if>
             <if test="password != null and password != ''">
                 and password = #{password}

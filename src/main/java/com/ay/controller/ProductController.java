@@ -1,7 +1,8 @@
 package com.ay.controller;
 
-import com.ay.form.ProductForm;
-import com.ay.form.ProductListParam;
+import com.ay.param.ProductForm;
+import com.ay.param.ProductListParam;
+import com.ay.param.ProductParam;
 import com.ay.model.Product;
 import com.ay.service.ProductService;
 import com.github.pagehelper.PageInfo;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 public class ProductController {
@@ -25,7 +28,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/save-product", method = RequestMethod.POST)
-    public String saveProduct(ProductForm productForm) {
+    public String saveProduct(@Valid ProductForm productForm) {
         logger.info("saveProduct方法被调用");
 
         Product product = new Product();
@@ -76,10 +79,24 @@ public class ProductController {
     }
 
     @GetMapping("/delete-product")
-    public String deleteProduct(@RequestParam("productId") String productId) {
+    public String deleteProduct(@RequestParam("productId") Integer productId) {
         productService.deleteProduct(productId);
 
         return "redirect:/list-product";
+    }
+
+    @GetMapping("/look-product")
+    public String lookProduct() {
+        return "Product";
+    }
+
+    @PostMapping("/select-product")
+    @ResponseBody
+    public Object selectProduct(@RequestBody ProductParam productParam) {
+        Product product = productService.findById(productParam.getId());
+        System.out.println(product);
+
+        return product;
     }
 
 }

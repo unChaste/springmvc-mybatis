@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface AyUserService {
     List<AyUser> findAll();
+
+    int deleteById(Integer id);
 }

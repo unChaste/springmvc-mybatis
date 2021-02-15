@@ -1,6 +1,8 @@
 package com.ay.model;
 
-public class AyUserAddress {
+import java.io.Serializable;
+
+public class AyUserAddress implements Serializable {
     private Integer id;
 
     private String name;
@@ -19,5 +21,13 @@ public class AyUserAddress {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "AyUserAddress{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

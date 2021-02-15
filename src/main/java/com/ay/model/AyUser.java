@@ -1,8 +1,9 @@
 package com.ay.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AyUser {
+public class AyUser implements Serializable {
     private Integer id;
 
     private String name;
@@ -45,5 +46,15 @@ public class AyUser {
     public void setAyUserAddressList(List<AyUserAddress> ayUserAddressList) {
         this.ayUserAddressList = ayUserAddressList;
 
+    }
+
+    @Override
+    public String toString() {
+        return "AyUser{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", ayUserAddressList=" + ayUserAddressList +
+                '}';
     }
 }

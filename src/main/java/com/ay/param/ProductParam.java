@@ -1,13 +1,18 @@
-package com.ay.model;
+package com.ay.param;
 
-import java.io.Serializable;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
-public class Product implements Serializable {
+public class ProductParam {
     private Integer id;
+
+    @NotNull
     private String name;
 
     private String description;
 
+    @NotNull
+    @DecimalMin(value = "0.0", message = "价格不能小于0")
     private Double price;
 
     public Integer getId() {
@@ -44,7 +49,7 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "ProductParam{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
