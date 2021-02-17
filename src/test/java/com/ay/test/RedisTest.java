@@ -15,7 +15,7 @@ public class RedisTest extends BaseJUnit4Test {
 
     @Test
     public void testRedis() {
-        redisTemplate.opsForValue().set("hello", "hello redis");
+        redisTemplate.opsForValue().set("cat:kitty", "hello redis");
         String greeting = (String) redisTemplate.opsForValue().get("hello");
         System.out.println("value of greeting is:" + greeting);
     }
@@ -28,5 +28,16 @@ public class RedisTest extends BaseJUnit4Test {
         JedisCluster jc = new JedisCluster(jedisClusterNodes);
         jc.set("foo", "bar");
         String value = jc.get("foo");
+    }
+
+    @Test
+    public void testRedisSet() {
+        redisTemplate.opsForSet().add("fruit", "apple", "pear", "cherry");
+        boolean isMember = redisTemplate.opsForSet().isMember("fruit", "apple");
+        System.out.println("apple is member Of set fruit?" + isMember);
+        Long apple = redisTemplate.opsForSet().remove("fruit", "apple");
+        System.out.println("remove result :" + apple);
+        Set fruit = redisTemplate.opsForSet().members("praise:2");
+        System.out.println(fruit);
     }
 }

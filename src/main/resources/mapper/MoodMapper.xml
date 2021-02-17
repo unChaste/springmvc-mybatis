@@ -5,6 +5,13 @@
         insert into user_mood_praise (moodId, userId, isCancel, praiseTime)
         values(#{moodId}, #{userId}, #{isCancel}, #{praiseTime})
     </insert>
+    <insert id="savePraiseList">
+        insert into user_mood_praise(moodId, userId)
+        values
+        <foreach collection="praiseUserIdSet" item="userId" separator=",">
+            (#{moodId}, #{userId})
+        </foreach>
+    </insert>
     <update id="increasePraiseNum">
         update mood set praiseNum = praiseNum + 1 where id = #{moodId}
     </update>
@@ -22,5 +29,11 @@
     </select>
     <delete id="deleteUserMoodPraiseById">
         delete from user_mood_praise where id = #{userMoodPraiseId}
+    </delete>
+    <delete id="deletePraiseList">
+        delete from user_mood_praise where moodId = #{moodId} and userId in
+        <foreach collection="unpraiseUserIdSet" item="userId" separator="," open="(" close=")">
+            #{userId}
+        </foreach>
     </delete>
 </mapper>
