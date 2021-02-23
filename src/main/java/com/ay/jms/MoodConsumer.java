@@ -5,7 +5,6 @@ import com.ay.request.MoodUnpraiseRequest;
 import com.ay.service.MoodService;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
