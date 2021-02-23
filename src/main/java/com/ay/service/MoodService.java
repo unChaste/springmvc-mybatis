@@ -18,4 +18,8 @@ public interface MoodService {
     int savePraiseList(Integer moodId, Set<Integer> praiseUserIdSet);
 
     int deletePraiseList(Integer moodId, Set<Integer> unpraiseUserIdSet);
+
+    void asyncPraise(MoodPraiseRequest request);
+
+    void asyncUnpraise(MoodUnpraiseRequest request);
 }

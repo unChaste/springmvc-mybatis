@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+    <context:property-placeholder location="classpath:activemq.properties"/>
+
+    <bean id="jmsCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="${activemq.url}"/>
+                <property name="userName" value="${activemq.username}"/>
+                <property name="password" value="${activemq.password}"/>
+            </bean>
+        </property>
+        <property name="sessionCacheSize" value="100"/>
+    </bean>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <constructor-arg ref="jmsCachingConnectionFactory"/>
+        <property name="receiveTimeout" value="10000"/>
+        <property name="pubSubDomain" value="false"/>
+    </bean>
+
+    <jms:listener-container destination-type="queue" container-type="default" connection-factory="jmsCachingConnectionFactory"
+                            acknowledge="auto">
+        <jms:listener destination="ay.queue.praise" ref="moodConsumer"/>
+    </jms:listener-container>
+</beans>

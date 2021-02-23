@@ -1,6 +1,7 @@
 package com.ay.service.impl;
 
 import com.ay.dao.MoodDao;
+import com.ay.jms.MoodProducer;
 import com.ay.model.UserMoodPraise;
 import com.ay.request.MoodListRequest;
 import com.ay.request.MoodPraiseRequest;
@@ -48,6 +49,18 @@ public class MoodServiceImpl implements MoodService {
             Long unpraiseNumOfRedis = redisTemplate.opsForSet().size(REIDS_UNPRAISE_PREFIX + response.getId());
             response.setPraiseNum(response.getPraiseNum() + praiseNumOfRedis.intValue() - unpraiseNumOfRedis.intValue());
         }
+    }
+
+    @Autowired
+    private MoodProducer moodProducer;
+
+    public void asyncPraise(MoodPraiseRequest request) {
+        moodProducer.sendPraiseMessage(request);
+    }
+
+    @Override
+    public void asyncUnpraise(MoodUnpraiseRequest request) {
+        moodProducer.sendUnpraiseMessage(request);
     }
 
     @Override

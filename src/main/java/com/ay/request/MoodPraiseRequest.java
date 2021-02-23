@@ -1,6 +1,8 @@
 package com.ay.request;
 
-public class MoodPraiseRequest {
+import java.io.Serializable;
+
+public class MoodPraiseRequest implements Serializable {
     private Integer moodId;
 
     private Integer userId;

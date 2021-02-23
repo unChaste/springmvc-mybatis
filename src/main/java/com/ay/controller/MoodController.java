@@ -34,13 +34,13 @@ public class MoodController {
 
     @GetMapping("/praise")
     public String praise(MoodPraiseRequest request) {
-        moodService.praise(request);
+        moodService.asyncPraise(request);
         return "redirect:/mood/listMood";
     }
 
     @GetMapping("unpraise")
     public String unpraise(MoodUnpraiseRequest request) {
-        moodService.unpraise(request);
+        moodService.asyncUnpraise(request);
         return "redirect:/mood/listMood";
     }
 }
